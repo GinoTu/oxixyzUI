@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/skin">
+
+    <ImageView
+        android:id="@+id/ecLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ismalllogo" />
+
+    <LinearLayout
+        android:id="@+id/nameGroup"
+        android:layout_width="411dp"
+        android:layout_height="112dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="@+id/ecLogo"
+        app:layout_constraintStart_toStartOf="@+id/ecLogo"
+        app:layout_constraintTop_toBottomOf="@+id/ecLogo">
+
+        <ImageView
+            android:id="@+id/nameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/tname" />
+
+        <FrameLayout
+            android:id="@+id/nameTypeZone"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="381dp">
+
+            <ImageView
+                android:id="@+id/nameBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/itextbar" />
+
+            <EditText
+                android:id="@+id/nameTextField"
+                android:layout_width="297dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:inputType="text"
+                android:textColor="@color/blue_253290"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:text=" " />
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pnumGroup"
+        android:layout_width="411dp"
+        android:layout_height="101dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="@+id/nameGroup"
+        app:layout_constraintStart_toStartOf="@+id/nameGroup"
+        app:layout_constraintTop_toBottomOf="@+id/nameGroup">
+
+        <ImageView
+            android:id="@+id/pnumText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/phoneNumber"
+            app:srcCompat="@drawable/tpnum"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="343dp" />
+
+        <FrameLayout
+            android:id="@+id/pnumTypeZone"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="381dp">
+
+            <ImageView
+                android:id="@+id/pnumBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/itextbar" />
+
+            <EditText
+                android:id="@+id/phoneNumber"
+                android:layout_width="297dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:inputType="phone"
+                android:textColor="@color/blue_253290"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:text=" " />
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pwGroup"
+        android:layout_width="411dp"
+        android:layout_height="112dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="@+id/pnumGroup"
+        app:layout_constraintStart_toStartOf="@+id/pnumGroup"
+        app:layout_constraintTop_toBottomOf="@+id/pnumGroup">
+
+        <ImageView
+            android:id="@+id/pwText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@+id/password"
+            app:srcCompat="@drawable/tpw"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="448dp" />
+
+        <FrameLayout
+            android:id="@+id/pwTypeZone"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="486dp">
+
+            <ImageView
+                android:id="@+id/pwbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/itextbar"
+                tools:layout_editor_absoluteX="50dp"
+                tools:layout_editor_absoluteY="492dp" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="299dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:inputType="text"
+                android:textColor="@color/blue_253290"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:text=" "
+                tools:layout_editor_absoluteX="50dp"
+                tools:layout_editor_absoluteY="491dp" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pwAgainGroup"
+        android:layout_width="411dp"
+        android:layout_height="101dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="@+id/pwGroup"
+        app:layout_constraintStart_toStartOf="@+id/pwGroup"
+        app:layout_constraintTop_toBottomOf="@+id/pwGroup">
+
+        <ImageView
+            android:id="@+id/pwAgainText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/tpwagain" />
+
+        <FrameLayout
+            android:id="@+id/pwAgainTypeZone"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="486dp">
+
+            <ImageView
+                android:id="@+id/pwAgainBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/itextbar"
+                tools:layout_editor_absoluteX="50dp"
+                tools:layout_editor_absoluteY="492dp" />
+
+            <EditText
+                android:id="@+id/pwAgainTextField"
+                android:layout_width="299dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:inputType="text"
+                android:textColor="@color/blue_253290"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:text=" "
+                tools:layout_editor_absoluteX="50dp"
+                tools:layout_editor_absoluteY="491dp" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:contentDescription=" "
+        android:background="@drawable/bcfrn"
+        app:layout_constraintEnd_toEndOf="@+id/pwAgainGroup"
+        app:layout_constraintStart_toStartOf="@+id/pwAgainGroup"
+        app:layout_constraintTop_toBottomOf="@+id/pwAgainGroup"
+        app:srcCompat="@drawable/bcfrn" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
