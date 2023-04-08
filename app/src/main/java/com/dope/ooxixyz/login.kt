@@ -1,17 +1,18 @@
 package com.dope.ooxixyz
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
-import java.io.IOException
-import java.util.concurrent.TimeUnit
+import androidx.appcompat.app.AppCompatActivity
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import java.io.IOException
+import java.util.concurrent.TimeUnit
+
 
 class login : AppCompatActivity() {
     var phoneNumber = ""
@@ -39,7 +40,7 @@ class login : AppCompatActivity() {
 
     }
     private fun login(InputphoneNumber: String, Inputpassword: String) {
-        Log.e("login", InputphoneNumber)
+        //Log.e("login", InputphoneNumber)
         val json = """
         {
             "phoneNumber": "$InputphoneNumber",
@@ -57,7 +58,7 @@ class login : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.103.159:3000/login")
+            .url("http:/192.168.150.159:3000/login")
             .post(requestBody)
             .build()
 
@@ -70,14 +71,36 @@ class login : AppCompatActivity() {
                     userName = jsonResponse.getJSONObject("response").getJSONObject("userDetail").get("userName").toString()
                     user_id = jsonResponse.getJSONObject("response").getJSONObject("userDetail").get("user_id").toString()
                     phoneNumber = jsonResponse.getJSONObject("response").getJSONObject("userDetail").get("phoneNumber").toString()
+
+
                     tonk = jsonResponse.getJSONObject("response").get("token").toString()
-                    Log.e("yes", "yes")
+
+                    val pref =
+                        getSharedPreferences("tokenFile", MODE_PRIVATE) //存成text.xml,MODE_PRIVATE方式存取
+
+                    pref.edit() //編輯pref
+                        .putString("TOKEN", tonk) //將user字串的內容寫入設定檔，資料標籤為”USER”。
+                        .commit() //提交編輯
+
+                    val pid =
+                        getSharedPreferences("user_File", MODE_PRIVATE) //存成text.xml,MODE_PRIVATE方式存取
+
+                    pid.edit() //編輯pref
+                        .putString("user_id", user_id)
+                        .putString("userName", userName)
+                        .putString("phoneNumber", phoneNumber)
+                        .commit() //提交編輯
+
+                    val getid = getSharedPreferences("user_File", MODE_PRIVATE) //取得SharedPreferences物件
+                        .getString("user_id", "") //取得USER的值 ""為預設回傳值
 
                     runOnUiThread {
                         startActivity(Intent(applicationContext, btconnect::class.java))
                     }
                     //startActivity(Intent(this, btconnect::class.java))
-
+                    if (getid != null) {
+                        Log.e("yes", getid)
+                    }
                 }
                 else
                 {
