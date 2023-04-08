@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.dope.ooxixyz.Contracts.PERMISSION_CODE
 
@@ -29,7 +30,11 @@ object Extend {
         return true
     }
 
-
+    //log cat
+    fun logE(tag: String, message: String) {
+        if (BuildConfig.DEBUG)
+            Log.e(tag, message)
+    }
 
 
 

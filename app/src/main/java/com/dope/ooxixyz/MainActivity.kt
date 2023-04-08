@@ -1,17 +1,13 @@
 package com.dope.ooxixyz
 
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var bos: ConstraintLayout
-    private lateinit var tos: ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

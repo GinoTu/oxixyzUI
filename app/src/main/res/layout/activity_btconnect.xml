@@ -10,23 +10,26 @@
         android:id="@+id/nextStep"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="84dp"
         android:layout_marginBottom="56dp"
         android:background="@drawable/bnext"
         android:contentDescription=" "
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+        app:layout_constraintVertical_bias="0.714"
         app:srcCompat="@drawable/bnext" />
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="@+id/frameLayout"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="@+id/frameLayout"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <ImageView
@@ -64,5 +67,32 @@
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/tbtnotcon" />
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <ImageView
+            android:id="@+id/btbox"
+            android:layout_width="413dp"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/btbox" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvListPair"
+            android:layout_width="340dp"
+            android:layout_height="258dp"
+            android:layout_gravity="center"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintDimensionRatio="2:1"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:listitem="@layout/activity_btlist" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

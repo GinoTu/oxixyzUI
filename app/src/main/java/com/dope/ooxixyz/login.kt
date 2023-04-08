@@ -1,25 +1,29 @@
 package com.dope.ooxixyz
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
+import com.dope.ooxixyz.databinding.ActivityLoginBinding
 
 class login : AppCompatActivity() {
+    private val binding: ActivityLoginBinding by lazy {
+        ActivityLoginBinding.inflate(
+            layoutInflater
+        )
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(binding.root)
 
-        //confirm button
-        findViewById<ImageButton>(R.id.confirm).setOnClickListener{
-            startActivity(Intent(this, btconnect::class.java))
+        binding.also{
+            //confirm button
+            it.confirm.setOnClickListener{
+                startActivity(Intent(this, btconnect::class.java))
+            }
+            //signup button
+            it.newAccount.setOnClickListener{
+                startActivity(Intent(this, signup::class.java))
+            }
         }
-
-        //signup button
-        findViewById<ImageButton>(R.id.newAccount).setOnClickListener{
-            startActivity(Intent(this, signup::class.java))
-        }
-
     }
 }

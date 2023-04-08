@@ -1,4 +1,6 @@
 package com.dope.ooxixyz
 
-class BLEDevice {
-}
+data class BLEDevice(
+    val name: String,
+    val address: String
+)
