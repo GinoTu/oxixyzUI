@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/skin">
+
+    <ImageView
+        android:id="@+id/ecLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.015"
+        app:srcCompat="@drawable/iecelogo" />
+
+    <LinearLayout
+        android:id="@+id/pnumGroup"
+        android:layout_width="411dp"
+        android:layout_height="112dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ecLogo">
+
+        <ImageView
+            android:id="@+id/pnumText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/phoneNumber"
+            app:srcCompat="@drawable/tpnum"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="343dp" />
+
+        <FrameLayout
+            android:id="@+id/pnumTypeZone"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="381dp">
+
+            <ImageView
+                android:id="@+id/pnumBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/itextbar" />
+
+            <EditText
+                android:id="@+id/phoneNumber"
+                android:layout_width="297dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:textColor="@color/blue_253290"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pwGroup"
+        android:layout_width="411dp"
+        android:layout_height="101dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pnumGroup">
+
+        <ImageView
+            android:id="@+id/pwText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@+id/password"
+            app:srcCompat="@drawable/tpw"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="448dp" />
+
+        <FrameLayout
+            android:id="@+id/pwTypeZone"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="486dp">
+
+            <ImageView
+                android:id="@+id/pwBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/itextbar"
+                tools:layout_editor_absoluteX="50dp"
+                tools:layout_editor_absoluteY="492dp" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="299dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:textColor="@color/blue_253290"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                tools:layout_editor_absoluteX="50dp"
+                tools:layout_editor_absoluteY="491dp" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:contentDescription=" "
+        android:background="@drawable/bcfrn"
+        app:layout_constraintEnd_toEndOf="@+id/pwGroup"
+        app:layout_constraintStart_toStartOf="@+id/pwGroup"
+        app:layout_constraintTop_toBottomOf="@+id/newAccount"
+        app:srcCompat="@drawable/bcfrn" />
+
+    <ImageButton
+        android:id="@+id/newAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:contentDescription=" "
+        android:background="@drawable/tclicktocreateacc"
+        app:layout_constraintEnd_toEndOf="@+id/pwGroup"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="@+id/pwGroup"
+        app:layout_constraintTop_toBottomOf="@+id/pwGroup"
+        app:srcCompat="@drawable/tclicktocreateacc" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
