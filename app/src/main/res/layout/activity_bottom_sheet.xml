@@ -16,7 +16,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/backgroundImage" />
+
+    <!-- RecycleView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMemberList"
+        android:layout_marginTop="120dp"
+        android:layout_marginBottom="230dp"
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
     <ImageButton
         android:id="@+id/addFriend"
@@ -24,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="144dp"
         android:background="@drawable/bfadd"
-        android:contentDescription="addfriend"
+        android:contentDescription="@string/addFriendButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
