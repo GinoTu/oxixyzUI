@@ -60,6 +60,7 @@ class btconnect : AppCompatActivity() {
 
     private var socket: BluetoothSocket? = null
     private lateinit var currentdeviceaddr:BluetoothDevice
+    private var onoff = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,10 +77,12 @@ class btconnect : AppCompatActivity() {
         } else if(requestBluetoothPermission() && requestLocationPermission())
             statecheck = 1
 
+        onoff = false
         initRv()
         nextstepbtn()
         if(btAdapter.isEnabled && statecheck == 2)
             rcv()
+        if(btAdapter.isEnabled && onoff == true)
         checkdevice()
     }
 
@@ -89,6 +92,7 @@ class btconnect : AppCompatActivity() {
 
         binding.run {
             nextStep.setOnClickListener {
+
                 when (statecheck)
                 {   //開啟權限
                     0 -> {
@@ -108,6 +112,7 @@ class btconnect : AppCompatActivity() {
                     2 ->{
                         if (btAdapter.isEnabled)
                         {
+                            onoff = true
                             Intent(BLE_LAUNCH).apply { startActivity(this) }
 
                         }else{
@@ -276,9 +281,6 @@ private fun checkdevice()
                     pairedDevices?.find { it.address == item.address }?.let { device ->
                         pairedDevice = device
                         pairDevice(device)
-                        initSocket()
-                        checkdevice()
-
                     }
                 }
             }
