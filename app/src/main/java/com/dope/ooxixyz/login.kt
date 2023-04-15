@@ -16,11 +16,13 @@ import java.util.concurrent.TimeUnit
 
 
 class login : AppCompatActivity() {
+
     private var phoneNumber = ""
     private var password = ""
     private var userName = ""
     private var userId = ""
     private var token = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -30,10 +32,8 @@ class login : AppCompatActivity() {
 
             phoneNumber = findViewById<EditText>(R.id.phoneNumber).text.toString()
             password = findViewById<EditText>(R.id.password).text.toString()
-            //印出phoneNumber和password
-            Log.e("input", "phoneNumber: $phoneNumber, password: $password")
             login(phoneNumber, password)
-            //startActivity(Intent(this, btconnect::class.java))
+
         }
 
         //signup button
@@ -66,7 +66,7 @@ class login : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/login")
+            .url("http:/192.168.57.159:3000/login")
             .post(requestBody)
             .build()
 
