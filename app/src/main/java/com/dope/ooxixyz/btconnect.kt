@@ -22,18 +22,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dope.ooxixyz.Contracts.PERMISSION_BLUETOOTH_CONNECT
-import com.dope.ooxixyz.Contracts.PERMISSION_BLUETOOTH_SCAN
-import com.dope.ooxixyz.Contracts.PERMISSION_COARSE_LOCATION
-import com.dope.ooxixyz.Contracts.PERMISSION_CODE
-import com.dope.ooxixyz.Contracts.PERMISSION_FINE_LOCATION
 import com.dope.ooxixyz.Contracts.bluetooth_permission
 import com.dope.ooxixyz.Contracts.location_permission
 import com.dope.ooxixyz.Extend.parcelable
 import com.dope.ooxixyz.Extend.requestPermission
 import com.dope.ooxixyz.databinding.ActivityBtconnectBinding
-import java.io.InputStream
-import java.io.OutputStream
+import kotlinx.coroutines.*
+import java.io.IOException
 import java.util.*
 
 
@@ -43,8 +38,9 @@ class btconnect : AppCompatActivity() {
         private const val DEVICE_SELECTED = "android.bluetooth.devicepicker.action.DEVICE_SELECTED"
         private const val BLE_LAUNCH = "android.bluetooth.devicepicker.action.LAUNCH"
     }
+
     private val btAdapter: BluetoothAdapter by lazy {
-        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val bluetoothManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter
     }
     private val binding: ActivityBtconnectBinding by lazy {
@@ -63,78 +59,151 @@ class btconnect : AppCompatActivity() {
     private var isConnectOther = true
 
     private var socket: BluetoothSocket? = null
-    private var output: OutputStream? = null
-    private var input: InputStream? = null
-
-    private val stringBuilder = StringBuilder()
+    private lateinit var currentdeviceaddr:BluetoothDevice
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        //初始判斷
+        if (btAdapter.isEnabled && requestBluetoothPermission() && requestLocationPermission()) {
+            val hintl1: ImageView = binding.hintl1
+            hintl1.setImageResource(R.drawable.igreenlight)
+
+            val bttext: ImageView = binding.bttext
+            bttext.setImageResource(R.drawable.tbtiscon)
+            statecheck = 2
+        } else if(requestBluetoothPermission() && requestLocationPermission())
+            statecheck = 1
+
         initRv()
         nextstepbtn()
+        if(btAdapter.isEnabled && statecheck == 2)
+            rcv()
+        checkdevice()
     }
 
-    //要求權限
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            PERMISSION_CODE -> {
-                for (result in grantResults)
-                    if (result != PackageManager.PERMISSION_GRANTED) {
-                        when {
-                            permissions.any { it == PERMISSION_FINE_LOCATION || it == PERMISSION_COARSE_LOCATION }
-                            -> displayShortToast("請開啟定位的權限!")
-                            permissions.any { it == PERMISSION_BLUETOOTH_SCAN || it == PERMISSION_BLUETOOTH_CONNECT }
-                            -> displayShortToast("請開啟藍芽的權限!")
-                        }
-                        return
+    //nextstep button
+    @SuppressLint("SuspiciousIndentation")
+    private fun nextstepbtn() {
+
+        binding.run {
+            nextStep.setOnClickListener {
+                when (statecheck)
+                {   //開啟權限
+                    0 -> {
+                        if(!requestBluetoothPermission())  requestBluetoothPermission()
+                        if(!requestLocationPermission())  requestLocationPermission()
+                        if(!requestLocationPermission() || !requestBluetoothPermission())
+                            return@setOnClickListener
+                        else if (requestLocationPermission() && requestBluetoothPermission())
+                            statecheck = 1
                     }
+                    // 開啟藍芽
+                    1 -> {
+                        launchBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+                        statecheck = 2
+                    }
+                    //尋找裝置
+                    2 ->{
+                        if (btAdapter.isEnabled)
+                        {
+                            Intent(BLE_LAUNCH).apply { startActivity(this) }
+
+                        }else{
+                            displayShortToast("請不要關閉藍芽")
+                            launchBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+                        }
+                    }
+                    //切換頁面
+                    3 -> {
+                        if (btAdapter.isEnabled)
+                        {
+                            startActivity(Intent(this@btconnect, MainActivity::class.java))
+                        }else{
+                            displayShortToast("請不要關閉藍芽")
+                            launchBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+                        }
+                    }
+                    else -> {
+                        displayShortToast("請試著重開此程式")
+                    }
+                }
             }
         }
     }
+
     //開BT
     private val launchBluetooth =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        result?.let {
-            if (result.resultCode != RESULT_OK) {
-                Toast.makeText(this@btconnect, "請開啟您的藍芽!", Toast.LENGTH_SHORT).show()
+            result?.let {
+                if (result.resultCode != RESULT_OK) {
+                    Toast.makeText(this@btconnect, "請開啟您的藍芽!", Toast.LENGTH_SHORT).show()
 
-                val hintl1: ImageView = binding.hintl1
-                hintl1.setImageResource(R.drawable.iredlight)
+                    val hintl1: ImageView = binding.hintl1
+                    hintl1.setImageResource(R.drawable.iredlight)
 
-                val bttext: ImageView = binding.bttext
-                bttext.setImageResource(R.drawable.tbtnotcon)
-            }else{
+                    val bttext: ImageView = binding.bttext
+                    bttext.setImageResource(R.drawable.tbtnotcon)
+                } else {
 
-                val hintl1: ImageView = binding.hintl1
-                hintl1.setImageResource(R.drawable.igreenlight)
+                    val hintl1: ImageView = binding.hintl1
+                    hintl1.setImageResource(R.drawable.igreenlight)
 
-                val bttext: ImageView = binding.bttext
-                bttext.setImageResource(R.drawable.tbtiscon)
-                statecheck =1
+                    val bttext: ImageView = binding.bttext
+                    bttext.setImageResource(R.drawable.tbtiscon)
+
+                    rcv()
+                }
             }
         }
+
+    //recycle view
+    private fun rcv()
+    {
+        //抓取已配對過的資料已建立 recycle view
+        btAdapter.let {
+            // 先找已配對過的
+            pairedDevices = it.bondedDevices
+            pairDeviceList.clear()
+            pairedDevices?.forEach { device ->
+                pairDeviceList.add(BLEDevice(device.name, device.address))
+                currentdeviceaddr = device
+            }.also { pairDeviceAdapter.setterData(pairDeviceList) }
+            it
+        }.also {
+            initService( /*初始化BroadcastReceiver*/)
+            val filter = IntentFilter(DEVICE_SELECTED)
+            registerReceiver(receiver, filter)
+        }
+
     }
 
+    //判斷是否為指定之裝置
+private fun checkdevice()
+{
+    if(btAdapter.isEnabled)
+    {
+        if(currentdeviceaddr.toString() == "00:18:E5:03:70:51")
+        {
+            val hintl2: ImageView = binding.hintl2
+            hintl2.setImageResource(R.drawable.igreenlight)
 
-    //nextstep button
-    private fun nextstepbtn() {
-        binding.run {
-            nextStep.setOnClickListener {
-                //判斷版本，要求權限
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !requestLocationPermission())
-                    return@setOnClickListener
-                    initBluetooth()
-            }
+            val pairtext: ImageView = binding.pairtext
+            pairtext.setImageResource(R.drawable.tdeviceiscon)
+            displayShortToast("已配對至指定裝置!!")
+            statecheck = 3
 
+        } else {
+            val hintl2: ImageView = binding.hintl2
+            hintl2.setImageResource(R.drawable.iredlight)
+
+            val pairtext: ImageView = binding.pairtext
+            pairtext.setImageResource(R.drawable.tdevicenotcon)
+            displayShortToast("請配對指定裝置!")
         }
     }
+}
 
 
     //短暫顯示toast
@@ -153,50 +222,12 @@ class btconnect : AppCompatActivity() {
     //要藍芽權限
     @RequiresApi(Build.VERSION_CODES.S)
     fun Activity.requestBluetoothPermission(): Boolean {
-        if(!Extend.requestPermission(this, *bluetooth_permission)){
+        if(!requestPermission(this, *bluetooth_permission)){
             displayShortToast("請開啟藍芽權限!")
             return false
         }
     return true
     }
-
-
-    //初始化藍芽
-    private fun initBluetooth() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-            (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.BLUETOOTH_CONNECT
-            ) != PackageManager.PERMISSION_GRANTED ||
-                    ActivityCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.BLUETOOTH_SCAN
-                    ) != PackageManager.PERMISSION_GRANTED)
-        ) {
-            requestBluetoothPermission()
-            return
-        }
-
-        //取得藍芽開啟
-        if (!btAdapter.isEnabled)
-            launchBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
-
-        btAdapter.let {
-            // 先找已配對過的
-            pairedDevices = it.bondedDevices
-            pairDeviceList.clear()
-            pairedDevices?.forEach { device ->
-                pairDeviceList.add(BLEDevice(device.name, device.address))
-            }.also { pairDeviceAdapter.setterData(pairDeviceList) }
-            it
-        }.also {
-
-            initService( /*初始化BroadcastReceiver*/)
-            val filter = IntentFilter(DEVICE_SELECTED)
-            registerReceiver(receiver, filter)
-        }
-    }
-
 
     private fun initService() {
         receiver = object : BroadcastReceiver() {
@@ -216,28 +247,16 @@ class btconnect : AppCompatActivity() {
             requestBluetoothPermission()
             return
         }
-        // 連線藍芽
         try {
             isConnectOther = true
             device.createBond()
-            Toast.makeText(this@btconnect, "Connect ${device.name}", Toast.LENGTH_SHORT).show()
+            initSocket()
+            checkdevice()
 
-            val hintl2: ImageView = binding.hintl2
-            hintl2.setImageResource(R.drawable.igreenlight)
-
-            val pairtext: ImageView = binding.pairtext
-            pairtext.setImageResource(R.drawable.tdeviceiscon)
-
+            currentdeviceaddr = device
         } catch (e: Exception) {
             e.printStackTrace()
             Extend.logE("Pair", "Connect Error: ${e.message.toString()}")
-
-            val hintl2: ImageView = binding.hintl2
-            hintl2.setImageResource(R.drawable.iredlight)
-
-            val pairtext: ImageView = binding.pairtext
-            pairtext.setImageResource(R.drawable.tdevicenotcon)
-
             finish()
         }
     }
@@ -251,14 +270,68 @@ class btconnect : AppCompatActivity() {
             addItemDecoration(DividerItemDecoration(baseContext, DividerItemDecoration.VERTICAL))
             pairDeviceAdapter
         }.apply {
-            onItemClickCallback = { _, item ->
-                // 連線藍芽
-                pairedDevices?.find { it.address == item.address }?.let { device ->
-                    pairedDevice = device
-                    pairDevice(device)
+            if(statecheck != 3) {
+                onItemClickCallback = { _, item ->
+                    // 連線藍芽
+                    pairedDevices?.find { it.address == item.address }?.let { device ->
+                        pairedDevice = device
+                        pairDevice(device)
+                        initSocket()
+                        checkdevice()
+
+                    }
                 }
             }
         }
     }
 
+    private fun initSocket() {
+        if(btAdapter.isEnabled) {
+            Toast.makeText(this@btconnect, "Connecting...", Toast.LENGTH_LONG).show()
+            // 確定權限開啟
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                ) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.BLUETOOTH_SCAN
+                        ) != PackageManager.PERMISSION_GRANTED)
+            ) {
+                requestBluetoothPermission()
+                return
+            }
+            try {
+                // Socket 連線
+                socket =
+                    pairedDevice?.createRfcommSocketToServiceRecord(pairedDevice?.uuids?.get(0)?.uuid)
+                        ?: return
+                isConnectOther = false
+                CoroutineScope(Dispatchers.Default).launch {
+                    while (socket?.isConnected == false) {
+                        try {
+                            socket?.connect()
+                            if (socket?.isConnected == true) {
+                                Extend.logE("initSocket", "Connect Success")
+                            }
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                            Extend.logE("initSocket", "Connect Error: ${e.message.toString()}")
+                        } catch (e: InterruptedException) {
+                            e.printStackTrace()
+                            Extend.logE("initSocket", "Connect Error: ${e.message.toString()}")
+                        }
+                        delay(5000)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Extend.logE("initSocket", "Error: ${e.message.toString()}")
+            }
+        }else
+        {
+            launchBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+        }
+    }
 }
