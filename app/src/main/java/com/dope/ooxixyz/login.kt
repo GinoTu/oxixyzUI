@@ -66,7 +66,7 @@ class login : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.57.159:3000/login")
+            .url("http:/192.168.0.136:3000/login")
             .post(requestBody)
             .build()
 
@@ -111,7 +111,6 @@ class login : AppCompatActivity() {
                     runOnUiThread {
                         startActivity(Intent(applicationContext, btconnect::class.java))
                     }
-                    //startActivity(Intent(this, btconnect::class.java))
                     if (getId != null) {
                         Log.e("yes", getId)
                     }

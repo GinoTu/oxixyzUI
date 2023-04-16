@@ -9,12 +9,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dope.ooxixyz.Adapter.MemberListAdapter
+import com.dope.ooxixyz.Adapter.MemberRequestListAdapter
 import com.dope.ooxixyz.databinding.ActivityBottomSheetBinding
 import com.dope.ooxixyz.databinding.ActivityMainBinding
 import com.dope.ooxixyz.databinding.ActivityTopSheetBinding
 import com.dope.ooxixyz.sensorInResponse.sensorIn
 import com.dope.ooxixyz.sensorShowResponse.sensorShow
 import com.dope.ooxixyz.userInfoResponse.Members
+import com.dope.ooxixyz.userInfoResponse.MembersRequest
 import com.dope.ooxixyz.userInfoResponse.userInfoResponseFormat
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
@@ -30,10 +32,11 @@ class MainActivity : AppCompatActivity() {
     private var bottomSheetDialog: BottomSheetDialog? = null
     private var topSheetDialog: BottomSheetDialog? = null
 
-    private var membersRequestList: MutableList<Members> = ArrayList() //儲存 response 回傳的 membersList
     //參數
     private var membersList: MutableList<Members> = ArrayList() //儲存 response 回傳的 membersList
+    private var membersRequestList: MutableList<MembersRequest> = ArrayList() //儲存 response 回傳的 membersList
     private lateinit var memberListAdapter: MemberListAdapter //儲存 Adapter 的變數
+    private lateinit var memberRequestListAdapter: MemberRequestListAdapter //儲存 Adapter 的變數
 
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var userId = ""
@@ -58,6 +61,7 @@ class MainActivity : AppCompatActivity() {
 
         setListener( /*設定按鈕監聽器*/ )
     }
+
     //顯示好友清單
     private fun displayFriendsList() {
         val view = ActivityBottomSheetBinding.inflate(layoutInflater)
@@ -88,12 +92,12 @@ class MainActivity : AppCompatActivity() {
             val input = EditText(this)
             builder.setView(input)
 
-            builder.setPositiveButton("OK") { dialog, which ->
+            builder.setPositiveButton("OK") { _, _ ->
                 responseTo = input.text.toString()
                 membersRequest(responseTo)
             }
 
-            builder.setNegativeButton("Cancel") { dialog, which ->
+            builder.setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
             }
 
@@ -116,6 +120,18 @@ class MainActivity : AppCompatActivity() {
         //friend list bottom sheet
         topSheetDialog?.setContentView(view.root)
         topSheetDialog?.show()
+
+        // RecyclerView
+        memberRequestListAdapter = MemberRequestListAdapter() //初始化 Adapter 物件
+        memberRequestListAdapter.setterData(membersRequestList)
+        Log.e("recyclerView", "count = ${memberRequestListAdapter.itemCount}")
+
+        view.rvMemberRequestList.run {
+            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+            adapter = memberRequestListAdapter
+            addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
+            memberRequestListAdapter
+        }
     }
 
     //好友清單API
@@ -139,7 +155,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.57.159:3000/userInfo")//記得改網址
+            .url("http:/192.168.0.136:3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -186,7 +202,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.57.159:3000/userInfo")//記得改網址
+            .url("http:/192.168.0.136:3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -201,6 +217,9 @@ class MainActivity : AppCompatActivity() {
                 val userInfo = Gson().fromJson(userInfoResponse, userInfoResponseFormat::class.java)
                 //印出userInfo的membersRequest
                 Log.e("membersRequest", userInfo.response.userInfo.membersRequest.toString())
+
+                membersRequestList.clear()
+                membersRequestList.addAll(userInfo.response.userInfo.membersRequest)
 
             }
             override fun onFailure(call: Call, e: IOException) {
@@ -241,7 +260,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.57.159:3000/membersRequest")//記得改網址
+            .url("http:/192.168.0.136:3000/membersRequest")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -296,7 +315,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.150.159:3000/membersRequest/accept")//記得改網址
+            .url("http:/192.168.0.136:3000/membersRequest/accept")//記得改網址
             .addHeader("Authorization","Bearer " + token)
             .post(requestBody)
             .build()
@@ -349,7 +368,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.150.159:3000/membersRequest/deny")//記得改網址
+            .url("http:/192.168.0.136:3000/membersRequest/deny")//記得改網址
             .addHeader("Authorization","Bearer " + token)
             .post(requestBody)
             .build()
@@ -397,8 +416,8 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/192.168.57.159:3000/sensorData/save")//記得改網址
-            .addHeader("Authorization","Bearer " + token)
+            .url("http:/192.168.0.136:3000/sensorData/save")//記得改網址
+            .addHeader("Authorization", "Bearer $token")
             .post(body)
             .build()
         client.newCall(request).enqueue(object : Callback {
@@ -428,16 +447,16 @@ class MainActivity : AppCompatActivity() {
 
         Log.e("sensorShow", json)
         // 定义 JSON 格式的媒体类型
-        val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
+        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
         // 创建请求体
-        val requestBody = json.toRequestBody(JSON_MEDIA_TYPE)
+        val requestBody = json.toRequestBody(jsonMediaType)
         val client = OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS) // 连接超时时间为 10 秒
             .readTimeout(10, TimeUnit.SECONDS) // 读取超时时间为 10 秒
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/192.168.57.159:3000/sensorData/show")//記得改網址
+            .url("http:/192.168.0.136:3000/sensorData/show")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
