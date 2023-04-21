@@ -80,6 +80,10 @@ class MainActivity : AppCompatActivity() {
             adapter = memberListAdapter
             addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
             memberListAdapter
+        }.apply{
+            onItemClickCallback = { position, item ->
+                Toast.makeText(applicationContext, item.userName, Toast.LENGTH_SHORT).show()
+            }
         }
 
         view.addFriend.setOnClickListener {
@@ -131,6 +135,10 @@ class MainActivity : AppCompatActivity() {
             adapter = memberRequestListAdapter
             addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
             memberRequestListAdapter
+        }.apply{
+            onItemClickCallback = { position, item ->
+                Toast.makeText(applicationContext, item.userName, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -155,7 +163,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.0.136:3000/userInfo")//記得改網址
+            .url("http:/192.168.38.44:3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -202,7 +210,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.0.136:3000/userInfo")//記得改網址
+            .url("http:/192.168.38.44:3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -260,7 +268,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.0.136:3000/membersRequest")//記得改網址
+            .url("http:/192.168.38.44:3000/membersRequest")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -416,7 +424,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/192.168.0.136:3000/sensorData/save")//記得改網址
+            .url("http:/192.168.38.44:3000/sensorData/save")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(body)
             .build()
@@ -456,7 +464,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/192.168.0.136:3000/sensorData/show")//記得改網址
+            .url("http:/192.168.38.44:3000/sensorData/show")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()

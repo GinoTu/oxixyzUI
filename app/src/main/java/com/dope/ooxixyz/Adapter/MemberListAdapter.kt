@@ -9,6 +9,9 @@ import com.dope.ooxixyz.userInfoResponse.Members
 class MemberListAdapter : RecyclerView.Adapter<MemberListAdapter.MemberListViewHolder>() {
     private var memberList: List<Members> = ArrayList()
 
+    // Item點擊
+    lateinit var onItemClickCallback: ((Int, Members) -> Unit)
+
     // 設定資料進來。
     fun setterData(memberList: List<Members>) {
         this.memberList = memberList
@@ -26,6 +29,8 @@ class MemberListAdapter : RecyclerView.Adapter<MemberListAdapter.MemberListViewH
         //Log.e("memberList", item.userName)
         holder.binding.apply {
             tvName.text = item.userName
+
+            root.setOnClickListener{ onItemClickCallback.invoke(position, item) }
         }
     }
 
