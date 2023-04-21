@@ -66,7 +66,7 @@ class login : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/login")
+            .url("http:/192.168.147.159:3000/login")
             .post(requestBody)
             .build()
 

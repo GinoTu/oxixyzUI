@@ -83,6 +83,23 @@ class MainActivity : AppCompatActivity() {
         }.apply{
             onItemClickCallback = { position, item ->
                 Toast.makeText(applicationContext, item.userName, Toast.LENGTH_SHORT).show()
+                AlertDialog.Builder(this@MainActivity)
+                    .setTitle("是否設為重要聯絡人好友")
+                    .setNeutralButton("否"){dialog, which ->
+                    }
+                    .setPositiveButton("是"){dialog, which ->
+                        val important =
+                            getSharedPreferences("importantFile", MODE_PRIVATE) //存成text.xml,MODE_PRIVATE方式存取
+
+                        important.edit() //編輯pref
+                            .putString("importantFriend", item.user_id) //將user字串的內容寫入設定檔，資料標籤為”USER”。
+                            //.commit() //提交編輯
+                            .apply() //提交編輯
+                        val getImportantFriend = getSharedPreferences("importantFile", MODE_PRIVATE) //取得SharedPreferences物件
+                            .getString("importantFriend", "") //取得USER的值 ""為預設回傳值
+
+                        Log.e("是",getImportantFriend.toString() )
+                    }.show()
             }
         }
 
@@ -138,6 +155,20 @@ class MainActivity : AppCompatActivity() {
         }.apply{
             onItemClickCallback = { position, item ->
                 Toast.makeText(applicationContext, item.userName, Toast.LENGTH_SHORT).show()
+                val responseTo = """
+        {
+            "user_id": "${item.user_id}",
+            "userName": "${item.userName}",
+            "phoneNumber": "${item.phoneNumber}"
+        }""".trimIndent()
+                AlertDialog.Builder(this@MainActivity)
+                    .setTitle("是否加為好友")
+                    .setNeutralButton("拒絕"){dialog, which ->
+                        membersDeny(responseTo)
+                    }
+                    .setPositiveButton("接受"){dialog, which ->
+                        membersAccept(responseTo)
+                    }.show()
             }
         }
     }
@@ -163,7 +194,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/userInfo")//記得改網址
+            .url("http:/192.168.147.159:3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -210,7 +241,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/userInfo")//記得改網址
+            .url("http:/192.168.147.159:3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -268,7 +299,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/membersRequest")//記得改網址
+            .url("http:/192.168.147.159:3000/membersRequest")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -293,9 +324,9 @@ class MainActivity : AppCompatActivity() {
         client.dispatcher.executorService.shutdown()
     }
 
-/*
     //送出好友接受
-    private fun membersAccept(requestTo: String) {
+    private fun membersAccept(responseTo: String) {
+        Log.e("membersAccept",responseTo )
 
         val userDetail = """
         {
@@ -308,14 +339,14 @@ class MainActivity : AppCompatActivity() {
         {
             "user_id": "$userId",
             "userDetail": $userDetail,
-            "requestTo": "$requestTo"
+            "responseTo": $responseTo
         }
     """.trimIndent()
 
         // 定义 JSON 格式的媒体类型
-        val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
+        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
         // 创建请求体
-        val requestBody = json.toRequestBody(JSON_MEDIA_TYPE)
+        val requestBody = json.toRequestBody(jsonMediaType)
         val client = OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS) // 连接超时时间为 10 秒
             .readTimeout(10, TimeUnit.SECONDS) // 读取超时时间为 10 秒
@@ -323,8 +354,8 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.0.136:3000/membersRequest/accept")//記得改網址
-            .addHeader("Authorization","Bearer " + token)
+            .url("http:/192.168.147.159:3000/membersResponse/accept")//記得改網址
+            .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
 
@@ -332,11 +363,12 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
 
                 val membersAcceptResponse = response.body?.string()
+                Log.e("print2", membersAcceptResponse.toString())
 
                 //將userInfoResponse對應到userInfoResponseFormat的data class
-                val membersAccept = Gson().fromJson(membersAcceptResponse, membersAccept::class.java)
+                //val membersAccept = Gson().fromJson(membersAcceptResponse, membersAccept::class.java)
                 //印出userInfo的membersRequest
-                Log.e("membersAccept", membersAccept.toString())
+                //Log.e("membersAccept", membersAccept.toString())
 
             }
             override fun onFailure(call: Call, e: IOException) {
@@ -348,7 +380,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     //送出拒絕好友6c
-    private fun membersDeny(requestTo: String) {
+    private fun membersDeny(responseTo: String) {
+        //Log.e("membersDeny",responseTo )
 
         val userDetail = """
         {
@@ -361,14 +394,16 @@ class MainActivity : AppCompatActivity() {
         {
             "user_id": "$userId",
             "userDetail": $userDetail,
-            "requestTo": "$requestTo"
+            "responseTo": $responseTo
         }
     """.trimIndent()
 
+        Log.e("json",json )
+
         // 定义 JSON 格式的媒体类型
-        val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
+        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
         // 创建请求体
-        val requestBody = json.toRequestBody(JSON_MEDIA_TYPE)
+        val requestBody = json.toRequestBody(jsonMediaType)
         val client = OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS) // 连接超时时间为 10 秒
             .readTimeout(10, TimeUnit.SECONDS) // 读取超时时间为 10 秒
@@ -376,8 +411,8 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.0.136:3000/membersRequest/deny")//記得改網址
-            .addHeader("Authorization","Bearer " + token)
+            .url("http:/192.168.147.159:3000/membersResponse/deny")//記得改網址
+            .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
 
@@ -385,11 +420,11 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
 
                 val membersDenyResponse = response.body?.string()
-
+                Log.e("print", membersDenyResponse.toString())
                 //將userInfoResponse對應到userInfoResponseFormat的data class
-                val membersDeny = Gson().fromJson(membersDenyResponse, membersDeny::class.java)
+                //val membersDeny = Gson().fromJson(membersDenyResponse, membersDeny::class.java)
                 //印出userInfo的membersRequest
-                Log.e("membersDeny", membersDeny.toString())
+                //Log.e("membersDeny", membersDeny.toString())
             }
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
@@ -398,8 +433,6 @@ class MainActivity : AppCompatActivity() {
         // 释放线程池
         client.dispatcher.executorService.shutdown()
     }
-
- */
 
     //血氧資料輸入4a
     private fun sensorIn(inputUserId: String) {
@@ -424,7 +457,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/sensorData/save")//記得改網址
+            .url("http:/192.168.147.159:3000/sensorData/save")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(body)
             .build()
@@ -464,7 +497,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/sensorData/show")//記得改網址
+            .url("http:/192.168.147.159:3000/sensorData/show")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
