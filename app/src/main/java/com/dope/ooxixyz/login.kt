@@ -5,8 +5,12 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dope.ooxixyz.loginResponse.loginResponseFormat
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import com.google.gson.Gson
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
@@ -66,7 +70,7 @@ class login : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.147.159:3000/login")
+            .url("http:/192.168.38.44:3000/login")
             .post(requestBody)
             .build()
 
@@ -108,6 +112,24 @@ class login : AppCompatActivity() {
                     val getId = getSharedPreferences("user_File", MODE_PRIVATE) //取得SharedPreferences物件
                         .getString("user_id", "") //取得USER的值 ""為預設回傳值
 
+                    Firebase.messaging.token.addOnCompleteListener(OnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                            return@OnCompleteListener
+                        }
+
+                        // Get new FCM registration token
+                        val token = task.result
+
+                        // Log and toast
+                        val msg = getString(R.string.msg_token_fmt, token)
+                        Log.d(TAG, msg)
+                        Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+
+                        // 將 Token 存入 Database
+                        //sendTokenToServer(token)
+                    })
+
                     runOnUiThread {
                         startActivity(Intent(applicationContext, btconnect::class.java))
                     }
@@ -128,5 +150,9 @@ class login : AppCompatActivity() {
         })
         // 释放线程池
         client.dispatcher.executorService.shutdown()
+    }
+
+    companion object{
+        private const val TAG = "MainActivity"
     }
 }

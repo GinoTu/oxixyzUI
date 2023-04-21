@@ -194,7 +194,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.147.159:3000/userInfo")//記得改網址
+            .url("http:/192.168.38.44:3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -241,7 +241,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.147.159:3000/userInfo")//記得改網址
+            .url("http:/192.168.38.44.159:3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -299,7 +299,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.147.159:3000/membersRequest")//記得改網址
+            .url("http:/192.168.38.44:3000/membersRequest")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -354,7 +354,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.147.159:3000/membersResponse/accept")//記得改網址
+            .url("http:/192.168.38.44:3000/membersResponse/accept")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -411,7 +411,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.147.159:3000/membersResponse/deny")//記得改網址
+            .url("http:/192.168.38.44:3000/membersResponse/deny")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -457,7 +457,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/192.168.147.159:3000/sensorData/save")//記得改網址
+            .url("http:/192.168.38.44:3000/sensorData/save")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(body)
             .build()
@@ -497,7 +497,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/192.168.147.159:3000/sensorData/show")//記得改網址
+            .url("http:/192.168.38.44:3000/sensorData/show")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
