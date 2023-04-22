@@ -1,5 +1,8 @@
 package com.dope.ooxixyz
 
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothSocket
+import android.content.BroadcastReceiver
 import android.os.Build
 import androidx.annotation.RequiresApi
 
@@ -16,4 +19,9 @@ object Contracts {
     val location_permission = arrayOf(PERMISSION_FINE_LOCATION, PERMISSION_COARSE_LOCATION)
     @RequiresApi(Build.VERSION_CODES.S)
     val bluetooth_permission = arrayOf(PERMISSION_BLUETOOTH_SCAN, PERMISSION_BLUETOOTH_CONNECT)
+
+    internal lateinit var currentdeviceaddr: BluetoothDevice
+    internal var socket: BluetoothSocket? = null
+    internal var receiver: BroadcastReceiver? = null
+
 }

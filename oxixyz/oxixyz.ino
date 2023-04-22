@@ -50,17 +50,16 @@ void setup()
   /*Baud Rate initial end*/
 
   /*check chips*/
-  // if (!particleSensor.begin(Wire, I2C_SPEED_FAST))
-  // {
-  //   BT.println(F("MAX30105 was not found. Please check wiring/power."));
-  //   while (1);
-  // }
-
-  // if (!mpu.begin())
-  // {
-  //   BT.println(F("MPU6050 was not found. Please check wiring/power."));
-  //   while (1);
-  // }
+    if (!particleSensor.begin(Wire, I2C_SPEED_FAST))
+    {
+    BT.println(F("MAX30105 was not found. Please check wiring/power."));
+    while (1);
+    }
+    if (!mpu.begin())
+    {
+      BT.println(F("MPU6050 was not found. Please check wiring/power."));
+      while (1);
+    }
   /*check chips end*/
 
   /*oxi initial*/
@@ -83,20 +82,11 @@ void setup()
   mpu.setInterruptPinPolarity(true);
   mpu.setMotionInterrupt(true);
   /*xyz initial end*/
-
-  bool gooo = false;
-  while(!gooo)
-  {
-    if(BT.readString() == "gooo")
-    {
-      gooo = true;
-    }
-  }
-
 }
 
 void loop()
 {
+  Serial.println("initing...");
   /*xyz step up*/
   float AcX, AcY, AcZ; 
   int GyX, GyY, GyZ, Tmp;
@@ -109,7 +99,8 @@ void loop()
 
   /*millis set up*/
   unsigned long timeNow = millis();
-  int period=1000;
+  int distate = 0;
+  int period=280;
   /*millis set up end*/
 
   /*oxi measure pt.1*/
@@ -203,19 +194,45 @@ void loop()
       /*xyz measure end*/
 
       /*display*/
-      if(period <= millis() - timeNow)
+      if(period <= millis() - timeNow && distate == 0)
+      {
+        BT.print(spo2, DEC);
+        BT.print("S");
+        
+        Serial.print(spo2, DEC);
+        Serial.print("S");
+        
+        timeNow = millis();
+        distate = 1;
+
+      }
+      else if(period <= millis() - timeNow && distate == 1)
       {
         BT.print(heartRate, DEC);
-        BT.print("G");
-        BT.print(spo2, DEC);
-        BT.print("G");
-        if(fallWarn == true)
-          BT.print(F("4"));//Fell!!!!!
-        else
-          BT.print(F("3"));//all good
-        BT.print("G");
+        BT.print("H");
+
+        Serial.print(heartRate, DEC);
+        Serial.print("H");
 
         timeNow = millis();
+        distate = 2;
+      }
+      else if(period <= millis() - timeNow && distate == 2)
+      {
+        if(fallWarn == true)
+          BT.print(F("1"));//Fell!!!!!
+        else
+          BT.print(F("0"));//all good
+        BT.print("F");
+
+        if(fallWarn == true)
+          Serial.print(F("1"));//Fell!!!!!
+        else
+          Serial.print(F("0"));//all good
+        Serial.println("F");
+
+        timeNow = millis();
+        distate = 0;
       }
       /*display end*/
     }

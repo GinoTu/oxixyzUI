@@ -24,8 +24,8 @@
         android:icon="@drawable/iecelogowbg"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Ooxixyz"
-        tools:targetApi="31">
+        android:theme="@style/Theme.Ooxixyz">
+
         <activity
             android:name=".MainActivity"
             android:exported="true" />

@@ -22,20 +22,37 @@
         android:id="@+id/spo2DislayBlock"
         android:layout_width="427dp"
         android:layout_height="245dp"
-        android:layout_marginTop="245dp"
+        android:layout_marginTop="244dp"
         android:foregroundGravity="center"
         app:layout_constraintEnd_toEndOf="@+id/hrDisplayBlock"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/hrDisplayBlock"
         app:layout_constraintTop_toTopOf="@+id/hrDisplayBlock"
         app:srcCompat="@drawable/ispo2" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/SPO2receive"
+        android:layout_width="269dp"
+        android:layout_height="187dp"
+        android:gravity="center"
+        android:text="請稍等"
+        android:textColor="@color/orrange_FF9229"
+        android:textSize="85dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/spo2DislayBlock"
+        app:layout_constraintEnd_toEndOf="@+id/HRreceive"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/HRreceive"
+        app:layout_constraintTop_toTopOf="@+id/spo2DislayBlock"
+        app:layout_constraintVertical_bias="0.413" />
+
     <ImageButton
         android:id="@+id/friendRequest"
-        android:contentDescription="friendreq"
         android:layout_width="68dp"
         android:layout_height="68dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/bmail"
+        android:contentDescription="friendreq"
         app:layout_constraintBottom_toTopOf="@+id/hrDisplayBlock"
         app:layout_constraintEnd_toEndOf="@+id/hrDisplayBlock"
         app:layout_constraintTop_toTopOf="parent"
@@ -54,4 +71,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spo2DislayBlock"
         app:srcCompat="@drawable/bfriendist" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/HRreceive"
+        android:layout_width="269dp"
+        android:layout_height="187dp"
+        android:gravity="center"
+        android:text="請稍等"
+        android:textColor="@color/orrange_FF9229"
+        android:textSize="85dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/hrDisplayBlock"
+        app:layout_constraintEnd_toEndOf="@+id/hrDisplayBlock"
+        app:layout_constraintHorizontal_bias="0.467"
+        app:layout_constraintStart_toStartOf="@+id/hrDisplayBlock"
+        app:layout_constraintTop_toTopOf="@+id/hrDisplayBlock"
+        app:layout_constraintVertical_bias="0.293" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
