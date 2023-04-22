@@ -91,19 +91,14 @@ class btconnect : AppCompatActivity() {
                     }
                     // 開啟藍芽//尋找裝置
                     1 -> {
-                        if(paired)
-                        {
-                            checkDevice()
-                        }
-                        else {
-                            if (!btAdapter.isEnabled)
-                                launchBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
-                            if (btAdapter.isEnabled) {
-                                Intent(BLE_LAUNCH).apply { startActivity(this) }
-                            } else {
-                                displayShortToast("請不要關閉藍芽")
-                                launchBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
-                            }
+                        StateTransform()
+                        if (!btAdapter.isEnabled)
+                            launchBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+                        if (btAdapter.isEnabled) {
+                            Intent(BLE_LAUNCH).apply { startActivity(this) }
+                        } else {
+                            displayShortToast("請不要關閉藍芽")
+                            launchBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
                         }
                     }
                     //切換頁面
@@ -153,6 +148,8 @@ class btconnect : AppCompatActivity() {
     }
 
     private fun checkDevice(){
+        Extend.logE("pair", paired.toString())
+        Extend.logE("pair", currentdeviceaddr.toString())
             if (currentdeviceaddr.toString() == "00:18:E5:03:70:51" && paired) {
                 statecheck = 2
                 val hintl2: ImageView = binding.hintl2
@@ -180,6 +177,7 @@ class btconnect : AppCompatActivity() {
                     Toast.makeText(this@btconnect, "請開啟您的藍芽!", Toast.LENGTH_SHORT).show()
                 } else {
                     rcv()
+                    StateTransform()
                 }
             }
         }
@@ -320,9 +318,13 @@ class btconnect : AppCompatActivity() {
                         }
                     }
                 }
-                Extend.logE("paired", paired.toString())
-                Extend.logE("currentdevice", currentdeviceaddr.toString())
-                checkDevice()
+                try {
+                    Thread.sleep(4500)
+                    checkDevice()
+                }catch (e: Exception){
+                    e.printStackTrace()
+                    Extend.logE("sleep", "Error: ${e.message.toString()}")
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
                 Extend.logE("initSocket", "Error: ${e.message.toString()}")
