@@ -11,8 +11,14 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 class MessagingService : FirebaseMessagingService() {
+    private var userId = ""
 
     // Token 被更新時觸發
     override fun onNewToken(token: String) {
@@ -20,8 +26,11 @@ class MessagingService : FirebaseMessagingService() {
 
         Log.d(TAG, "Refreshed token: $token")
 
+        userId = getSharedPreferences("user_File", MODE_PRIVATE) //取得SharedPreferences物件
+            .getString("user_id", "").toString() //取得USER的值 ""為預設回傳值
         // 將 Token 存入 Database
         //sendTokenToServer(token)
+        firebaseSave(userId,token)
     }
 
     // 收到 Message 時觸發
@@ -70,5 +79,48 @@ class MessagingService : FirebaseMessagingService() {
 
     companion object {
         private const val TAG = "MessagingService"
+    }
+    private fun firebaseSave(inputUserId: String , fireToken: String) {
+
+        val json = """
+        {
+            "user_id": "$inputUserId",
+            "firebaseToken": "$fireToken"
+        }
+    """.trimIndent()
+        // 定义 JSON 格式的媒体类型
+        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+        // 创建请求体
+        val requestBody = json.toRequestBody(jsonMediaType)
+        val client = OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS) // 连接超时时间为 10 秒
+            .readTimeout(10, TimeUnit.SECONDS) // 读取超时时间为 10 秒
+            .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
+            .build()
+
+        val token = getSharedPreferences("tokenFile", MODE_PRIVATE).getString("TOKEN", "").toString()
+
+        val request = Request.Builder()
+            .url("http:/10.122.9.218:3000/userInfo")//記得改網址
+            .addHeader("Authorization", "Bearer $token")
+            .patch(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+
+                //取得userInfo的Response
+                val userInfoResponse = response.body?.string()
+                Log.e("userInfoResponse", userInfoResponse.toString())
+//                Log.e("firebaseTOKEN", getSharedPreferences("tokenFile", MODE_PRIVATE) //取得SharedPreferences物件
+//                    .getString("firebaseTOKEN", "").toString())
+
+            }
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+        })
+        // 释放线程池
+        client.dispatcher.executorService.shutdown()
     }
 }

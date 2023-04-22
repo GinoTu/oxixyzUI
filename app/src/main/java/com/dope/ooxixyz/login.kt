@@ -8,10 +8,14 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dope.ooxixyz.loginResponse.loginResponseFormat
+import com.dope.ooxixyz.userInfoResponse.userInfoResponseFormat
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import com.google.gson.Gson
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -26,6 +30,7 @@ class login : AppCompatActivity() {
     private var userName = ""
     private var userId = ""
     private var token = ""
+    private var firebaseToken =""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +41,11 @@ class login : AppCompatActivity() {
 
             phoneNumber = findViewById<EditText>(R.id.phoneNumber).text.toString()
             password = findViewById<EditText>(R.id.password).text.toString()
+
+//            runBlocking{
+//                async { login(phoneNumber, password) }.await()
+//                async { firebaseSave(userId, firebaseToken) }.await()
+//            }
             login(phoneNumber, password)
 
         }
@@ -45,8 +55,7 @@ class login : AppCompatActivity() {
             startActivity(Intent(this, signup::class.java))
         }
 
-    }
-
+  }
     private fun login(inputPhoneNumber: String, inputPassword: String) {
         //印出inputPhoneNumber和inputPassword
         Log.e("login", "inputPhoneNumber: $inputPhoneNumber, inputPassword: $inputPassword")
@@ -70,7 +79,7 @@ class login : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/login")
+            .url("http:/10.122.9.218:3000/login")
             .post(requestBody)
             .build()
 
@@ -119,15 +128,23 @@ class login : AppCompatActivity() {
                         }
 
                         // Get new FCM registration token
-                        val token = task.result
+                        firebaseToken = task.result
 
                         // Log and toast
-                        val msg = getString(R.string.msg_token_fmt, token)
+                        val msg = getString(R.string.msg_token_fmt, firebaseToken)
                         Log.d(TAG, msg)
                         Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-
-                        // 將 Token 存入 Database
-                        //sendTokenToServer(token)
+                        firebaseSave(userId, firebaseToken)
+//                        // 將 Token 存入 Database
+//                        //sendTokenToServer(token)
+//                        val pref =
+//                            getSharedPreferences("tokenFile", MODE_PRIVATE) //存成text.xml,MODE_PRIVATE方式存取
+//
+//                        pref.edit() //編輯pref
+//                            .putString("firebaseTOKEN", firebaseToken) //將user字串的內容寫入設定檔，資料標籤為”USER”。
+//                            //.commit() //提交編輯
+//                            .apply() //提交編輯
+//                        //firebaseSave(userId,token)
                     })
 
                     runOnUiThread {
@@ -153,6 +170,47 @@ class login : AppCompatActivity() {
     }
 
     companion object{
-        private const val TAG = "MainActivity"
+        private const val TAG = "login"
+    }
+    private fun firebaseSave(inputUserId: String , fireToken: String) {
+
+        val json = """
+        {
+            "user_id": "$inputUserId",
+            "firebaseToken": "$fireToken"
+        }
+    """.trimIndent()
+        // 定义 JSON 格式的媒体类型
+        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+        // 创建请求体
+        val requestBody = json.toRequestBody(jsonMediaType)
+        val client = OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS) // 连接超时时间为 10 秒
+            .readTimeout(10, TimeUnit.SECONDS) // 读取超时时间为 10 秒
+            .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
+            .build()
+
+        val request = Request.Builder()
+            .url("http:/10.122.9.218:3000/userInfo")//記得改網址
+            .addHeader("Authorization", "Bearer $token")
+            .patch(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+
+                //取得userInfo的Response
+                val userInfoResponse = response.body?.string()
+                Log.e("userInfoResponse", userInfoResponse.toString())
+//                Log.e("firebaseTOKEN", getSharedPreferences("tokenFile", MODE_PRIVATE) //取得SharedPreferences物件
+//                    .getString("firebaseTOKEN", "").toString())
+
+            }
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+        })
+        // 释放线程池
+        client.dispatcher.executorService.shutdown()
     }
 }

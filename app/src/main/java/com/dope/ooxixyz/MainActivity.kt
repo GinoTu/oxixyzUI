@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     private var userName = ""
     private var phoneNumber = ""
     private var token = ""
+    private var getImportantFriend = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +57,9 @@ class MainActivity : AppCompatActivity() {
 
         phoneNumber = getSharedPreferences("user_File", MODE_PRIVATE) //取得SharedPreferences物件
             .getString("phoneNumber", "").toString() //取得USER的值 ""為預設回傳值
+
+        getImportantFriend = getSharedPreferences("importantFile", MODE_PRIVATE) //取得SharedPreferences物件
+            .getString("importantFriend", "").toString() //取得USER的值 ""為預設回傳值
 
         token = getSharedPreferences("tokenFile", MODE_PRIVATE).getString("TOKEN", "").toString()
 
@@ -95,10 +99,10 @@ class MainActivity : AppCompatActivity() {
                             .putString("importantFriend", item.user_id) //將user字串的內容寫入設定檔，資料標籤為”USER”。
                             //.commit() //提交編輯
                             .apply() //提交編輯
-                        val getImportantFriend = getSharedPreferences("importantFile", MODE_PRIVATE) //取得SharedPreferences物件
-                            .getString("importantFriend", "") //取得USER的值 ""為預設回傳值
+                        getImportantFriend = getSharedPreferences("importantFile", MODE_PRIVATE) //取得SharedPreferences物件
+                            .getString("importantFriend", "").toString() //取得USER的值 ""為預設回傳值
 
-                        Log.e("是",getImportantFriend.toString() )
+                        Log.e("是",getImportantFriend )
                     }.show()
             }
         }
@@ -194,7 +198,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/userInfo")//記得改網址
+            .url("http:/10.122.9.218:3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -241,7 +245,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.38.44.159:3000/userInfo")//記得改網址
+            .url("http:/10.122.9.218.159:3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -299,7 +303,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/membersRequest")//記得改網址
+            .url("http:/10.122.9.218:3000/membersRequest")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -354,7 +358,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/membersResponse/accept")//記得改網址
+            .url("http:/10.122.9.218:3000/membersResponse/accept")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -411,7 +415,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/membersResponse/deny")//記得改網址
+            .url("http:/10.122.9.218:3000/membersResponse/deny")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -457,7 +461,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/sensorData/save")//記得改網址
+            .url("http:/10.122.9.218:3000/sensorData/save")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(body)
             .build()
@@ -497,7 +501,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/192.168.38.44:3000/sensorData/show")//記得改網址
+            .url("http:/10.122.9.218:3000/sensorData/show")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -527,6 +531,7 @@ class MainActivity : AppCompatActivity() {
                 if (userId != "") {
                     //從api取得好友清單
                     membersList(userId)
+                    notification(userId,getImportantFriend)
                 }
                 displayFriendsList()
             }
@@ -540,5 +545,46 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    //跌倒通知
+    private fun notification(inputUserId: String , sendTo: String) {
+
+        val json = """
+        {
+            "user_id": "$inputUserId",
+            "sendTo": "$sendTo"
+        }
+    """.trimIndent()
+        // 定义 JSON 格式的媒体类型
+        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+        // 创建请求体
+        val requestBody = json.toRequestBody(jsonMediaType)
+        val client = OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS) // 连接超时时间为 10 秒
+            .readTimeout(10, TimeUnit.SECONDS) // 读取超时时间为 10 秒
+            .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
+            .build()
+
+        val request = Request.Builder()
+            .url("http:/10.122.9.218:3000/notification")//記得改網址
+            .addHeader("Authorization", "Bearer $token")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+
+                //取得userInfo的Response
+                val userInfoResponse = response.body?.string()
+                Log.e("notification", userInfoResponse.toString())
+
+            }
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+        })
+        // 释放线程池
+        client.dispatcher.executorService.shutdown()
     }
 }
