@@ -1,7 +1,5 @@
 package com.dope.ooxixyz
 
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothManager
 import android.content.ComponentCallbacks2
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -26,10 +24,6 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(
             layoutInflater
         )
-    }
-    private val btAdapter: BluetoothAdapter by lazy {
-        val bluetoothManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
-        bluetoothManager.adapter
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

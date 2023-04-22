@@ -11,12 +11,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -65,7 +63,7 @@ class btconnect : AppCompatActivity() {
         setContentView(binding.root)
 
         initRv()
-        StateTransform()
+        stateTransform()
         Extend.logE("statecheck", statecheck.toString())
         if(statecheck == 1)
             rcv()
@@ -77,7 +75,7 @@ class btconnect : AppCompatActivity() {
     private fun nextstepbtn() {
         binding.run {
             nextStep.setOnClickListener {
-                StateTransform()
+                stateTransform()
                 when (statecheck)
                 {   //開啟權限
                     0 -> {
@@ -87,11 +85,11 @@ class btconnect : AppCompatActivity() {
                             requestLocationPermission()
                         if(!requestLocationPermission() || !requestBluetoothPermission())
                             return@setOnClickListener
-                        StateTransform()
+                        stateTransform()
                     }
                     // 開啟藍芽//尋找裝置
                     1 -> {
-                        StateTransform()
+                        stateTransform()
                         if (!btAdapter.isEnabled)
                             launchBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
                         if (btAdapter.isEnabled) {
@@ -126,7 +124,7 @@ class btconnect : AppCompatActivity() {
             }
         }
     }
-    private fun StateTransform(){
+    private fun stateTransform(){
         if(requestBluetoothPermission() && requestLocationPermission() && !paired) {
             statecheck = 1
             Extend.logE("statecheck", statecheck.toString())
@@ -177,7 +175,7 @@ class btconnect : AppCompatActivity() {
                     Toast.makeText(this@btconnect, "請開啟您的藍芽!", Toast.LENGTH_SHORT).show()
                 } else {
                     rcv()
-                    StateTransform()
+                    stateTransform()
                 }
             }
         }
@@ -217,7 +215,6 @@ class btconnect : AppCompatActivity() {
     }
 
     //要藍芽權限
-    @RequiresApi(Build.VERSION_CODES.S)
     fun Activity.requestBluetoothPermission(): Boolean {
         if(!requestPermission(this, *bluetooth_permission)){
             displayShortToast("請開啟藍芽權限!")
@@ -238,8 +235,7 @@ class btconnect : AppCompatActivity() {
 
     private fun pairDevice(device: BluetoothDevice) {
         // 確定權限開啟
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-            (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||
+        if ((ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||
                     ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED)) {
             requestBluetoothPermission()
             return
@@ -285,8 +281,7 @@ class btconnect : AppCompatActivity() {
             paired = false
             Toast.makeText(this@btconnect, "Connecting...", Toast.LENGTH_LONG).show()
             // 確定權限開啟
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                (ActivityCompat.checkSelfPermission(this,
+            if ((ActivityCompat.checkSelfPermission(this,
                     Manifest.permission.BLUETOOTH_CONNECT
                 ) != PackageManager.PERMISSION_GRANTED ||
                         ActivityCompat.checkSelfPermission(this,
