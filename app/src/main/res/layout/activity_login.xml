@@ -33,7 +33,7 @@
             android:id="@+id/pnumText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:labelFor="@id/pnumTextField"
+            android:labelFor="@id/phoneNumber"
             app:srcCompat="@drawable/tpnum"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="343dp" />
@@ -53,13 +53,11 @@
                 app:srcCompat="@drawable/itextbar" />
 
             <EditText
-                android:id="@+id/pnumTextField"
+                android:id="@+id/phoneNumber"
                 android:layout_width="297dp"
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:ems="10"
-                android:inputType="phone"
-                android:text=" "
                 android:textColor="@color/blue_253290"
                 android:textSize="20dp"
                 android:textStyle="bold" />
@@ -83,7 +81,7 @@
             android:id="@+id/pwText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:labelFor="@+id/pwTextField"
+            android:labelFor="@+id/password"
             app:srcCompat="@drawable/tpw"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="448dp" />
@@ -105,13 +103,11 @@
                 tools:layout_editor_absoluteY="492dp" />
 
             <EditText
-                android:id="@+id/pwTextField"
+                android:id="@+id/password"
                 android:layout_width="299dp"
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:ems="10"
-                android:inputType="text"
-                android:text=" "
                 android:textColor="@color/blue_253290"
                 android:textSize="20dp"
                 android:textStyle="bold"

@@ -16,6 +16,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" /> <!-- 重要：Android10以上需要定位權限 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -24,7 +26,19 @@
         android:icon="@drawable/iecelogowbg"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Ooxixyz">
+
+        android:theme="@style/Theme.Ooxixyz"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+
+        <service
+            android:name=".MessagingService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".MainActivity"
@@ -53,5 +67,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 </manifest>

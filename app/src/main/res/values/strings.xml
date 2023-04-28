@@ -2,5 +2,9 @@
     <string name="app_name">Ooxixyz</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="ui_receive_data">%s</string>
-
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="backgroundImage">backgroundImage</string>
+    <string name="addFriendButton">addFriendButton</string>
+    <string name="default_notification_channel_id">fcm_default_channel</string>
+    <string name="msg_token_fmt">FCM registration Token: %s</string>
 </resources>
