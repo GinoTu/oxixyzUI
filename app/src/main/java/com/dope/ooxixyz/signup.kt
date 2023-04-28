@@ -50,7 +50,7 @@ class signup : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/192.168.103.159:3000/signup")
+            .url("http:/10.122.9.230:3000/signup")
             .post(body)
             .build()
         client.newCall(request).enqueue(object : Callback {
