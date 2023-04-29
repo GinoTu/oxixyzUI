@@ -117,6 +117,7 @@ class MainActivity : AppCompatActivity() {
     private fun processDataH() {
         CoroutineScope(Dispatchers.Main).launch {
             val receivedData = stringBuilder.removeSuffix("H").toString()
+            HIn(userId,receivedData)
             stringBuilder.clear()
             binding.HRreceive.text = String.format(getString(R.string.ui_receive_data, receivedData))
             Extend.logE("HR", receivedData)
@@ -127,6 +128,7 @@ class MainActivity : AppCompatActivity() {
     private fun processDataS() {
         CoroutineScope(Dispatchers.Main).launch {
             val receivedData = stringBuilder.removeSuffix("S").toString()
+            SIn(userId,receivedData)
             stringBuilder.clear()
             binding.SPO2receive.text = String.format(getString(R.string.ui_receive_data, receivedData))
             Extend.logE("SPO2", receivedData)
@@ -138,7 +140,8 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             val receivedData = stringBuilder.removeSuffix("F").toString()
             stringBuilder.clear()
-            if (receivedData == "H1F")
+            if (receivedData == "1")
+                notification(userId,getImportantFriend)
                 Extend.logE("FALL", "HELP!!!")
         }
     }
@@ -293,7 +296,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.230:3000/userInfo")//記得改網址
+            .url("http:/10.122.9.218:3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -340,7 +343,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.230:3000/userInfo")//記得改網址
+            .url("http:/10.122.9.218:3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -398,7 +401,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.230:3000/membersRequest")//記得改網址
+            .url("http:/10.122.9.218:3000/membersRequest")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -453,7 +456,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.230:3000/membersResponse/accept")//記得改網址
+            .url("http:/10.122.9.218:3000/membersResponse/accept")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -510,7 +513,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.230:3000/membersResponse/deny")//記得改網址
+            .url("http:/10.122.9.218:3000/membersResponse/deny")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -534,16 +537,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     //血氧資料輸入4a
-    private fun sensorIn(inputUserId: String) {
-        val sensorData = """
-        {
-            "Spo2": 20,
-            "HR": 30
-        }""".trimIndent()
+    private fun HIn(inputUserId: String , sensorData: String) {
         val json = """
         {
             "user_id": "$inputUserId",
-            "sensorData": $sensorData
+            "HR": $sensorData
         }
     """.trimIndent()
         // 定义 JSON 格式的媒体类型
@@ -556,7 +554,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/10.122.9.230:3000/sensorData/save")//記得改網址
+            .url("http:/10.122.9.218:3000/sensorData/saveHR")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(body)
             .build()
@@ -567,7 +565,45 @@ class MainActivity : AppCompatActivity() {
                 //將userInfoResponse對應到userInfoResponseFormat的data class
                 val sensorIn = Gson().fromJson(sensorInResponse, sensorIn::class.java)
                 //印出userInfo的membersRequest
-                Log.e("sensorInResponse", sensorIn.toString())
+                Log.e("HInResponse", sensorIn.toString())
+            }
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+        })
+        // 释放线程池
+        client.dispatcher.executorService.shutdown()
+    }
+    private fun SIn(inputUserId: String , sensorData:String) {
+
+        val json = """
+        {
+            "user_id": "$inputUserId",
+            "Spo2": $sensorData
+        }
+    """.trimIndent()
+        // 定义 JSON 格式的媒体类型
+        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+        // 创建请求体
+        val body = json.toRequestBody(jsonMediaType)
+        val client = OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS) // 连接超时时间为 10 秒
+            .readTimeout(10, TimeUnit.SECONDS) // 读取超时时间为 10 秒
+            .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
+            .build()
+        val request = Request.Builder()
+            .url("http:/10.122.9.218:3000/sensorData/saveSpo2")//記得改網址
+            .addHeader("Authorization", "Bearer $token")
+            .post(body)
+            .build()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+                val sensorInResponse = response.body?.string()
+
+                //將userInfoResponse對應到userInfoResponseFormat的data class
+                val sensorIn = Gson().fromJson(sensorInResponse, sensorIn::class.java)
+                //印出userInfo的membersRequest
+                Log.e("SInResponse", sensorIn.toString())
             }
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
@@ -596,7 +632,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/10.122.9.230:3000/sensorData/show")//記得改網址
+            .url("http:/10.122.9.218:3000/sensorData/show")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -662,7 +698,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.230:3000/notification")//記得改網址
+            .url("http:/10.122.9.218:3000/notification")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()

@@ -79,7 +79,7 @@ class login : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.230:3000/login")
+            .url("http:/10.122.9.218:3000/login")
             .post(requestBody)
             .build()
 
@@ -191,7 +191,7 @@ class login : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.230:3000/userInfo")//記得改網址
+            .url("http:/10.122.9.218:3000/userInfo")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .patch(requestBody)
             .build()

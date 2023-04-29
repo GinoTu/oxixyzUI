@@ -72,9 +72,8 @@
         android:layout_marginTop="12dp"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/pnumGroup"
+        app:layout_constraintStart_toStartOf="@+id/pnumGroup"
         app:layout_constraintTop_toBottomOf="@+id/pnumGroup">
 
         <ImageView
@@ -123,8 +122,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:contentDescription=" "
         android:background="@drawable/bcfrn"
+        android:contentDescription=" "
         app:layout_constraintEnd_toEndOf="@+id/pwGroup"
         app:layout_constraintStart_toStartOf="@+id/pwGroup"
         app:layout_constraintTop_toBottomOf="@+id/newAccount"
@@ -135,11 +134,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:contentDescription=" "
         android:background="@drawable/tclicktocreateacc"
-        app:layout_constraintEnd_toEndOf="@+id/pwGroup"
+        android:contentDescription=" "
+        app:layout_constraintEnd_toEndOf="@+id/confirm"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="@+id/pwGroup"
+        app:layout_constraintStart_toStartOf="@+id/confirm"
         app:layout_constraintTop_toBottomOf="@+id/pwGroup"
         app:srcCompat="@drawable/tclicktocreateacc" />
 
