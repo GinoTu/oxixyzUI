@@ -55,8 +55,7 @@
                 android:inputType="text"
                 android:textColor="@color/blue_253290"
                 android:textStyle="bold"
-                android:textSize="20dp"
-                android:text=" " />
+                android:textSize="20dp" />
         </FrameLayout>
 
     </LinearLayout>
@@ -103,8 +102,7 @@
                 android:inputType="phone"
                 android:textColor="@color/blue_253290"
                 android:textStyle="bold"
-                android:textSize="20dp"
-                android:text=" " />
+                android:textSize="20dp" />
         </FrameLayout>
 
     </LinearLayout>
@@ -154,7 +152,6 @@
                 android:textColor="@color/blue_253290"
                 android:textStyle="bold"
                 android:textSize="20dp"
-                android:text=" "
                 tools:layout_editor_absoluteX="50dp"
                 tools:layout_editor_absoluteY="491dp" />
 
@@ -204,7 +201,6 @@
                 android:textColor="@color/blue_253290"
                 android:textStyle="bold"
                 android:textSize="20dp"
-                android:text=" "
                 tools:layout_editor_absoluteX="50dp"
                 tools:layout_editor_absoluteY="491dp" />
 

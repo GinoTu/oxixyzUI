@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import com.dope.ooxixyz.Contracts.ipconfig
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -50,7 +51,7 @@ class signup : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/10.122.9.230:3000/signup")
+            .url("http:/"+getString(R.string.ipconfig)+":3000/signup")
             .post(body)
             .build()
         client.newCall(request).enqueue(object : Callback {

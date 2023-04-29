@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.dope.ooxixyz.Contracts.ipconfig
 import com.dope.ooxixyz.loginResponse.loginResponseFormat
 import com.dope.ooxixyz.userInfoResponse.userInfoResponseFormat
 import com.google.android.gms.tasks.OnCompleteListener
@@ -79,7 +80,7 @@ class login : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.218:3000/login")
+            .url("http:/"+getString(R.string.ipconfig)+":3000/login")
             .post(requestBody)
             .build()
 
@@ -191,7 +192,7 @@ class login : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.218:3000/userInfo")//記得改網址
+            .url("http:/"+getString(R.string.ipconfig)+":3000/userInfo")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .patch(requestBody)
             .build()

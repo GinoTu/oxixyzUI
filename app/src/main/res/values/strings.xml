@@ -7,4 +7,5 @@
     <string name="addFriendButton">addFriendButton</string>
     <string name="default_notification_channel_id">fcm_default_channel</string>
     <string name="msg_token_fmt">FCM registration Token: %s</string>
+    <string name="ipconfig">192.168.186.159</string>
 </resources>

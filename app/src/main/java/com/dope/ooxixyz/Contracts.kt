@@ -23,5 +23,6 @@ object Contracts {
     internal lateinit var currentdeviceaddr: BluetoothDevice
     internal var socket: BluetoothSocket? = null
     internal var receiver: BroadcastReceiver? = null
+    internal val ipconfig = "192.168.186.159"
 
 }

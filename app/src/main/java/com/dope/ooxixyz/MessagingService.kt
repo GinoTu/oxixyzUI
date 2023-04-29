@@ -9,6 +9,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.dope.ooxixyz.Contracts.ipconfig
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import okhttp3.*
@@ -101,7 +102,7 @@ class MessagingService : FirebaseMessagingService() {
         val token = getSharedPreferences("tokenFile", MODE_PRIVATE).getString("TOKEN", "").toString()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.218:3000/userInfo")//記得改網址
+            .url("http:/"+getString(R.string.ipconfig)+":3000/userInfo")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .patch(requestBody)
             .build()

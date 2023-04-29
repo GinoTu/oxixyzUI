@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dope.ooxixyz.Adapter.MemberListAdapter
 import com.dope.ooxixyz.Adapter.MemberRequestListAdapter
+import com.dope.ooxixyz.Contracts.ipconfig
 import com.dope.ooxixyz.databinding.ActivityBottomSheetBinding
 import com.dope.ooxixyz.databinding.ActivityTopSheetBinding
 import com.dope.ooxixyz.sensorInResponse.sensorIn
@@ -78,6 +79,8 @@ class MainActivity : AppCompatActivity() {
         token = getSharedPreferences("tokenFile", MODE_PRIVATE).getString("TOKEN", "").toString()
 
         setListener( /*設定按鈕監聽器*/ )
+        membersList(userId)
+        membersRequestList(userId)
 
     }
 
@@ -296,7 +299,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.218:3000/userInfo")//記得改網址
+            .url("http:/"+getString(R.string.ipconfig)+":3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -343,7 +346,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.218:3000/userInfo")//記得改網址
+            .url("http:/"+getString(R.string.ipconfig)+":3000/userInfo")//記得改網址
             .post(requestBody)
             .build()
 
@@ -401,7 +404,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.218:3000/membersRequest")//記得改網址
+            .url("http:/"+getString(R.string.ipconfig)+":3000/membersRequest")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -456,7 +459,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.218:3000/membersResponse/accept")//記得改網址
+            .url("http:/"+getString(R.string.ipconfig)+":3000/membersResponse/accept")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -513,7 +516,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.218:3000/membersResponse/deny")//記得改網址
+            .url("http:/"+getString(R.string.ipconfig)+":3000/membersResponse/deny")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -554,7 +557,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/10.122.9.218:3000/sensorData/saveHR")//記得改網址
+            .url("http:/"+getString(R.string.ipconfig)+":3000/sensorData/saveHR")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(body)
             .build()
@@ -592,7 +595,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/10.122.9.218:3000/sensorData/saveSpo2")//記得改網址
+            .url("http:/"+ getString(R.string.ipconfig)+":3000/sensorData/saveSpo2")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(body)
             .build()
@@ -632,7 +635,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间为 10 秒
             .build()
         val request = Request.Builder()
-            .url("http:/10.122.9.218:3000/sensorData/show")//記得改網址
+            .url("http:/"+getString(R.string.ipconfig)+":3000/sensorData/show")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
@@ -683,7 +686,7 @@ class MainActivity : AppCompatActivity() {
 
         val json = """
         {
-            "user_id": "$inputUserId",
+            "user_id": "$inputUserId"
             "sendTo": "$sendTo"
         }
     """.trimIndent()
@@ -698,7 +701,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http:/10.122.9.218:3000/notification")//記得改網址
+            .url("http:/"+getString(R.string.ipconfig)+":3000/notification")//記得改網址
             .addHeader("Authorization", "Bearer $token")
             .post(requestBody)
             .build()
