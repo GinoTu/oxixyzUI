@@ -216,7 +216,7 @@ void loop()
     uint32_t irValue = particleSensor.getIR();
     long now = millis();
     particleSensor.nextSample(); //We're finished with this sample so move to next sample
-    if (irValue<150000) {
+    if (irValue<140000) {
       voltage = getVCC();    
     } else 
     {
